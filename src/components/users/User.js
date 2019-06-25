@@ -1,16 +1,16 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useContext } from 'react';
 import Spinner from '../layout/Spinner';
-import PropTypes from 'prop-types';
 import Repos from '../repos/Repos';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import GithubContext from '../../context/github/githubContext';
 
-const User = ({ user, loading, getUser, getUserRepos, repos, match }) => {
+const User = ({ match }) => {
+  const githubContext = useContext(GithubContext);
+  const { user, loading, getUser, repos, getUserRepos } = githubContext;
   useEffect(() => {
+    // es-lint-disable-next-line
     getUser(match.params.login);
     getUserRepos(match.params.login);
-    // es-lint-disable-next-line
   }, []);
 
   const {
@@ -28,7 +28,6 @@ const User = ({ user, loading, getUser, getUserRepos, repos, match }) => {
     public_gists,
     hireable
   } = user;
-  const check = <FontAwesomeIcon icon={faCheck} />;
   if (loading) {
     return <Spinner />;
   }
@@ -103,11 +102,4 @@ const User = ({ user, loading, getUser, getUserRepos, repos, match }) => {
   );
 };
 
-User.propTypes = {
-  loading: PropTypes.bool,
-  user: PropTypes.object.isRequired,
-  repos: PropTypes.array.isRequired,
-  getUser: PropTypes.func.isRequired,
-  getUserRepos: PropTypes.func.isRequired
-};
 export default User;
